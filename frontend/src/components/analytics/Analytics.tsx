@@ -95,7 +95,7 @@ const Analytics = () => {
                     elevation={3}
                     sx={{
                         margin: 'auto',
-                        padding: '2%',
+                        padding: 2,
                         maxWidth: '100%',
                         flexGrow: 1
                     }}
@@ -109,7 +109,7 @@ const Analytics = () => {
                     sx={{
                         margin: 'auto',
                         maxWidth: '70%',
-                        padding: '2%',
+                        padding: 2,
                         flexGrow: 2,
                         flexDirection: 'column'
                     }}
