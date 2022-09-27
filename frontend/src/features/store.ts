@@ -5,6 +5,7 @@ import userReducer from "./user/user.slice";
 import booksReducer from "./books/books.slice";
 import userBooksReducer from "./user-books/user-book.slice";
 import transactionsReducer from "./transactions/transactions.slice";
+import analyticsReducer from "./analytics/analytics.slice";
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
     books: booksReducer,
     userBooks: userBooksReducer,
     transactions: transactionsReducer,
+    analytics: analyticsReducer
 });
 
 const store = configureStore({

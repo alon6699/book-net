@@ -11,11 +11,13 @@ import { fetchBooksThunk } from "./features/books/books.slice";
 import { fetchUserBooksThunk } from "./features/user-books/user-book.slice";
 import { socket } from '.';
 import { fetchUserThunk } from "./features/user/user.slice";
+import { fetchAnalyticsThunk } from './features/analytics/analytics.slice';
 
 function App() {
     const dispatch = useDispatch<AppDispatch>()
     const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
     const loggedInUserId = useSelector((state: RootState) => state.auth.user?.id);
+    const isAdmin = useSelector((state: RootState) => state.auth.user?.role === 'Admin');
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -74,6 +76,9 @@ function App() {
             dispatch(fetchBooksThunk());
             dispatch(fetchUserBooksThunk());
             dispatch(fetchUserThunk({userId: loggedInUserId}));
+            if(isAdmin) {
+                dispatch(fetchAnalyticsThunk());
+            }
         }
     }, [isLoggedIn]);
 

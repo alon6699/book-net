@@ -4,9 +4,9 @@ import { Avatar, Box, Grid, IconButton, IconButtonProps, styled, Typography } fr
 import { useSelector } from "react-redux";
 import { RootState } from "../../types/types";
 import { config } from "../../config/config";
-import HeaderPage, { guestHeaderPages, userHeaderPages } from "./HeaderPage";
+import HeaderPage, { guestHeaderPages, userHeaderPages, adminHeaderPages } from "./HeaderPage";
 
-const HeaderButton = styled(IconButton)<IconButtonProps>(({theme}) => ({
+const HeaderButton = styled(IconButton)<IconButtonProps>(({ theme }) => ({
     backgroundColor: "#12263A",
     color: "white",
     transition: "0.5s",
@@ -22,7 +22,8 @@ const Header = () => {
     const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
     const loggedInUser = useSelector((state: RootState) => state.auth.user);
 
-    const headerPagesToDisplay: HeaderPage[] = isLoggedIn ? userHeaderPages : guestHeaderPages;
+    const headerPagesToDisplay: HeaderPage[] = isLoggedIn ?
+        (loggedInUser?.role === 'Admin' ? adminHeaderPages : userHeaderPages) : guestHeaderPages;
 
     return (
         <Grid
@@ -42,7 +43,7 @@ const Header = () => {
                         <Avatar
                             alt="Profile Avatar"
                             src={loggedInUser ? `${config.apiUrl}/${loggedInUser.imageUrl}` : `${config.apiUrl}/${config.defaultUserImageName}`}
-                            sx={{width: 64, height: 64, boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.4)"}}
+                            sx={{ width: 64, height: 64, boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.4)" }}
                         />
                     </Box>
                     <Box>
@@ -56,14 +57,14 @@ const Header = () => {
                 </Box>
             </Grid>
             <Grid item xs={4}>
-                <Box sx={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
+                <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
                     <Link to='/'>
-                        <img src="/BookNetLogoV2.png" alt="BookNet" width={"250px"} height={"auto"}/>
+                        <img src="/BookNetLogoV2.png" alt="BookNet" width={"250px"} height={"auto"} />
                     </Link>
                 </Box>
             </Grid>
             <Grid item xs={4}>
-                <Box sx={{display: "flex", flexDirection: "row", justifyContent: "center", columnGap: 1}}>
+                <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", columnGap: 1 }}>
                     {headerPagesToDisplay.map((page: HeaderPage, index: number) => {
                         return (
                             <Link key={index} to={page.path}>
