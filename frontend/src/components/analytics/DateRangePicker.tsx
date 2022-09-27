@@ -21,8 +21,8 @@ export default function BasicDateRangePicker() {
                 value={dateRage}
                 maxDate={moment()}
                 onChange={(newValue) => {
-                    if(newValue[0] && newValue[1]) {
-                        dispatch(fetchAnalyticsThunk({ dateRange: newValue.map(date => date?.valueOf()) as DateRange<number> }));
+                    if (newValue[0] && newValue[1]) {
+                        dispatch(fetchAnalyticsThunk({ dateRange: [newValue[0]?.startOf('day').valueOf(), newValue[1]?.endOf('day').valueOf()] }));
                     }
                 }}
                 renderInput={(startProps, endProps) => (
