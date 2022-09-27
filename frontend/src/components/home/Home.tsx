@@ -74,11 +74,9 @@ const Home = () => {
     const filteredBooks = bookPosts.filter((bookPost: BookPostType) => {
         return (
             (
-                bookPost.book.title
-                    .toLocaleLowerCase()
+                bookPost.book.title?.toLocaleLowerCase()
                     .includes(state.searchText.toLocaleLowerCase()) ||
-                bookPost.book.author
-                    .toLocaleLowerCase()
+                bookPost.book.author?.toLocaleLowerCase()
                     .includes(state.searchText.toLocaleLowerCase())
             ) &&
             (
