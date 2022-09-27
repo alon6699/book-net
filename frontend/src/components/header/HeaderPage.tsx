@@ -5,6 +5,7 @@ import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import InboxIcon from '@mui/icons-material/Inbox';
 import PersonIcon from '@mui/icons-material/Person';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
 
 interface HeaderPage {
     icon: React.ReactElement<SvgIconProps>;
@@ -42,7 +43,13 @@ const profilePage: HeaderPage = {
     path: "/profile"
 }
 
+const analyticsPage: HeaderPage = {
+    icon: <AnalyticsIcon/>,
+    path: "/analytics"
+}
+
 export const guestHeaderPages: HeaderPage[] = [loginPage, registerPage]
 export const userHeaderPages: HeaderPage[] = [libraryPage, inboxPage, profilePage, logoutPage]
+export const adminHeaderPages: HeaderPage[] = [analyticsPage, ...userHeaderPages]
 
 export default HeaderPage;

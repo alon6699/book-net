@@ -8,6 +8,29 @@ import { UpdateTransactionStatusDto } from "./dto/update-transaction-status.dto"
 import { Transaction } from "./entities/transaction.entity";
 import { TransactionStatus } from "../../enums/transaction-status.enum";
 
+const getSum = (statuses: string[]) => `SUM (
+  case WHEN status in (${statuses.map(a => "'" + a.replace("'", "''") + "'").join()}) then 1
+   ELSE 0
+   END
+)`
+const finishedTransactions = getSum([TransactionStatus.FINISHED_TRANSACTION]);
+const transactionsInProgress = getSum([
+  TransactionStatus.WAITING_FOR_LEND,
+  TransactionStatus.WAITING_FOR_BOOK_RETURNED,
+  TransactionStatus.WAITING_FOR_RETURN_APPROVAL
+]);
+const transactionsDeclined = getSum([
+  TransactionStatus.CHAT_DECLINED,
+  TransactionStatus.LEND_DECLINED,
+  TransactionStatus.CHAT_CANCELED
+]);
+const transactionsErrors = getSum([
+  TransactionStatus.BORROWER_DIDNT_RECEIVE_BOOK,
+  TransactionStatus.BOOK_WASNT_RETURNED,
+  TransactionStatus.LENDER_DIDNT_RECEIVE_BOOK
+]);
+const newTransactions = getSum([TransactionStatus.WAITING_CHAT_APPROVAL]);
+
 @Injectable()
 export class TransactionService {
 
@@ -29,6 +52,31 @@ export class TransactionService {
     return this.transactionRepository.find({
       relations: ["borrowUser", "userBook", "userBook.user", "userBook.book", "chatMessages"]
     });
+  }
+
+  public async getTransactionsAmountPerDay(from: number, to: number) {
+    return this.transactionRepository
+      .createQueryBuilder("transaction")
+      .select('COUNT("id")', "count")
+      .addSelect(`DATE_TRUNC('day', "startDate")`, "date")
+      .where('"startDate" >= to_timestamp(:from::numeric/1000)', { from })
+      .andWhere('"startDate" <= to_timestamp(:to::numeric/1000)', { to })
+      .groupBy(`DATE_TRUNC('day', "startDate")`)
+      .execute()
+  }
+
+  public async getTransactionsAmountByStatus(from: number, to: number) {
+    return this.transactionRepository
+      .createQueryBuilder()
+      .select(finishedTransactions, "finishedTransactions")
+      .addSelect(transactionsInProgress, "transactionInProgress")
+      .addSelect(transactionsDeclined, "transactionsDeclined")
+      .addSelect(transactionsErrors, "transactionsErrors")
+      .addSelect(newTransactions, "newTransactions")
+      .where('"startDate" >= to_timestamp(:from::numeric/1000)', { from })
+      .andWhere('"startDate" <= to_timestamp(:to::numeric/1000)', { to })
+      .execute()
+      .then(data => data[0])
   }
 
   public async getTransactionById(id: string) {

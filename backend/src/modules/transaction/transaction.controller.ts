@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards
 } from "@nestjs/common";
@@ -58,11 +59,15 @@ export class TransactionController {
     return await this.transactionService.getTransactionById(createdTransaction.id);
   }
 
-  @Get()
-  @Roles(Role.ADMIN)
+  @Get('analytics')
+  @Roles(Role.USER, Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  async getTransactions() {
-    return await this.transactionService.getTransactions();
+  async getTransactionsCountAnalytics(@Query('from') from: number, @Query('to') to: number) {
+    const [transactionsAmountPerDay, transactionsAmountByStatus] = await Promise.all([
+      this.transactionService.getTransactionsAmountPerDay(from, to),
+      this.transactionService.getTransactionsAmountByStatus(from, to)
+    ]);
+    return { transactionsAmountPerDay, transactionsAmountByStatus }
   }
 
   @Get(":id")
