@@ -30,6 +30,9 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
           database: String(configService.get('DATABASE_NAME')),
           entities: ["dist/**/*.entity{.ts,.js}"],
           synchronize: true,
+          ssl: {
+            rejectUnauthorized: false
+          }
         };
       }
     }),
