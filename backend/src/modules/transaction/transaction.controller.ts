@@ -60,7 +60,7 @@ export class TransactionController {
   }
 
   @Get('analytics')
-  @Roles(Role.USER, Role.ADMIN)
+  @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async getTransactionsCountAnalytics(@Query('from') from: number, @Query('to') to: number) {
     const [transactionsAmountPerDay, transactionsAmountByStatus] = await Promise.all([
